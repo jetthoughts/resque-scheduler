@@ -1,8 +1,8 @@
 <h1>Delayed Jobs</h1>
 <%- size = resque.delayed_queue_schedule_size %>
 <% if size > 0 %>
-  <form method="POST" action="<%=u 'delayed/clear'%>" class='clear-delayed'>
-    <input type='submit' name='' value='Clear Delayed Jobs' />
+  <form method="POST" action="<%= u 'delayed/clear' %>" class='clear-delayed'>
+    <input type='submit' name='' value='Clear Delayed Jobs'/>
   </form>
 <% end %>
 
@@ -35,15 +35,18 @@
       <td><a href="<%= u "delayed/#{timestamp}" %>"><%= format_time(Time.at(timestamp)) %></a></td>
       <td><%= delayed_timestamp_size = resque.delayed_timestamp_size(timestamp) %></td>
       <% job = resque.delayed_timestamp_peek(timestamp, 0, 1).first %>
-      <td>
-        <% if job && delayed_timestamp_size == 1 %>
-          <%= h(job['class']) %>
-        <% else %>
-          <a href="<%= u "delayed/#{timestamp}" %>">see details</a>
-        <% end %>
-      </td>
-      <td><%= h(job['args'].inspect) if job && delayed_timestamp_size == 1 %></td>
-      <td><a href="<%=u URI("/delayed/jobs/#{job['class']}?args=" + URI.encode(job['args'].to_json)) %>">All schedules</a></td>
+      <%- if job -%>
+        <td>
+          <% if job && delayed_timestamp_size == 1 %>
+            <%= h(job['class']) %>
+          <% else %>
+            <a href="<%= u "delayed/#{timestamp}" %>">see details</a>
+          <% end %>
+        </td>
+        <td><%= h(job['args'].inspect) if job && delayed_timestamp_size == 1 %></td>
+        <td><a href="<%= u URI("/delayed/jobs/#{job['class']}?args=" + URI.encode(job['args'].to_json)) %>">All
+          schedules</a></td>
+      <%- end -%>
     </tr>
   <% end %>
 </table>
